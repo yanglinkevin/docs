@@ -59,6 +59,17 @@ serializable串行化
 MySQL主从复制涉及到三个线程，一个运行在主节点（log dump thread），其余两个(I/O thread, SQL thread)运行在从节点，如下图所示:
 ![](figure/mysqlmasterslave.jpg)  
 
+# 5. innodb和mylsam区别
+1. mylsam只支持表锁，innodb支持行锁，表锁
+2. mylsam不支持事务与外键，innodb支持
+3. mylsam不支持mvcc，innodb有
+4. mylsam b+树为非聚簇索引， innodb为聚簇索引
+5. InnoDB不保存表的具体行数，执行select count(*) from table时需要全表扫描。而MyISAM用一个变量保存了整个表的行数，执行上述语句时只需要读出该变量即可，速度很快.
+那么为什么InnoDB没有了这个变量呢？
+因为InnoDB的事务特性，在同一时刻表中的行数对于不同的事务而言是不一样的，因此count统计会计算对于当前事务而言可以统计到的行数，而不是将总行数储存起来方便快速查询。
+
+# 6. 为什么innodb要选自增类型做主键
+自增ID可以保证每次插入时B+索引是从右边扩展的，可以避免B+树和频繁合并和分裂（对比使用UUID）。如果使用字符串主键和随机主键，会使得数据随机插入，效率比较差。
 
 
 #1.数据库锁机制，在数据库管理中如何解决死锁
