@@ -105,3 +105,12 @@ https://blog.csdn.net/qq_16681169/article/details/74784193 数据库死锁处理
 ![](figure/neijoin.png)  
 ![](figure/leftjoin.png)  
 ![](figure/rightjoin.png)  
+
+# 9. 当前读，快照读，mvcc
+- 当前读:
+　　select...lock in share mode (共享读锁)
+　　select...for update
+　　update , delete , insert
+当前读, 读取的是最新版本, 并且对读取的记录加锁, 阻塞其他事务同时改动相同记录，避免出现安全问题。
+
+- 快照读： 单纯的select操作
