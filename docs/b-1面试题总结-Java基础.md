@@ -20,3 +20,9 @@ https://www.jianshu.com/p/9c7f5daac283
 - 浅拷贝实现 Cloneable 接口，并覆写 clone() 方法
 - 深拷贝每个对象都需要实现 Cloneable 并重写 clone() 方法
 - https://www.jianshu.com/p/94dbef2de298
+
+# 3. == 与 equals(重要)
+- ==判断的是两个对象地址是不是相等，也就是判断两个对象是不是同一个。
+
+- equals在没有覆盖的情况下，等价于==
+- 覆盖了equals方法，一般就是重写看内容相等不。
