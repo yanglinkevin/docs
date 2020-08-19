@@ -29,3 +29,13 @@ Leader：接受客户端请求，并向Follower同步请求日志，当日志同
 Follower：接受并持久化Leader同步的日志，在Leader告之日志可以提交之后，提交日志。  
 Candidate：Leader选举过程中的临时角色。  
 https://zhuanlan.zhihu.com/p/66441389
+
+# 4. 2pc, 3pc， tcc
+- ![](figure/2pc1.png)
+- ![](figure/2pc3.png)
+
+- ![](figure/3pc.png)
+
+- 2pc 就是 propose commit 然后 do commit 或者 abort
+- 3pc 就是 can canmmit, prepare commit do commit
+- 2pc 在数据库层面做的， tcc是业务层面的
