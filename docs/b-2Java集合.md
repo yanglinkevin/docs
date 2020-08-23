@@ -42,3 +42,8 @@ Hashtable在读写数据的时候会对整个容器上锁，而ConcurrentHashMap
             - ![](figure/ConcurrentHashMap.jpg)
 
 
+# 2. ArrayList, LinkedList, Vector
+
+# 3. HashMap, Hashtable, ConcurrentHashMap
+
+# 4. comparable, comparator

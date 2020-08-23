@@ -96,7 +96,24 @@
         - 通俗来说：当线程请求一个由其它线程持有的对象锁时，该线程会阻塞，而当线程请求由自己持有的对象锁时，如果该锁是重入锁，请求就会成功，否则阻塞
         - 是可重入锁，每个锁关联一个线程持有者和一个计数器。当计数器为0时表示该锁没有被任何线程持有，那么任何线程都都可能获得该锁而调用相应方法。当一个线程请求成功后，JVM会记下持有锁的线程，并将计数器计为1。此时其他线程请求该锁，则必须等待。而该持有锁的线程如果再次请求这个锁，就可以再次拿到这个锁，同时计数器会递增。当线程退出一个synchronized方法/块时，计数器会递减，如果计数器为0则释放该锁。
         - https://zhuanlan.zhihu.com/p/71156910 公平锁，可重入锁，偏向锁啥啥的各种锁。
-            
+        
+    - synchronized和Lock的区别？
+        - 二者都是可重入锁，“可重⼊锁”概念是：⾃⼰可以再次获取⾃⼰的内部锁。⽐如⼀个线程获得了某个对
+        象的锁，此时这个对象锁还没有释放，当其再次想要获取这个对象的锁的时候还是可以获取的，如果不
+        可锁重⼊的话，就会造成死锁。同⼀个线程每次获取锁，锁的计数器都⾃增1，所以要等到锁的计数器
+        下降为0时才能释放锁。
+        
+        - synchronized 依赖于 JVM ⽽ ReentrantLock 依赖于 API，需要 lock() 和 unlock() ⽅法配合
+        try/finally 语句块来完成）
+        
+        - ReentrantLock ⽐ synchronized 增加了⼀些⾼级功能
+            - ReentrantLock提供了⼀种能够中断等待锁的线程的机制，通过lock.lockInterruptibly()来实现这个机制。也就是说正在等待的线程可以选择放弃等待，改为处理其他事情。
+            - ReentrantLock可以指定是公平锁还是⾮公平锁。⽽synchronized只能是⾮公平锁。所谓的公平
+                锁就是先等待的线程先获得锁。 ReentrantLock默认情况是⾮公平的，可以通过 ReentrantLock
+                类的 ReentrantLock(boolean fair) 构造⽅法来制定是否是公平的。
+            - synchronized关键字与wait()和notify()/notifyAll()⽅法相结合可以实现等待/通知机制，
+            ReentrantLock类当然也可以实现，但是需要借助于Condition接⼝与newCondition() ⽅法。
+                    
 # 2. volatile如何保证可见性以及防止指令重排序？
 - 重排序场景
     - https://my.oschina.net/LucasZhu/blog/1537330
@@ -140,3 +157,5 @@
  - 让每个人线程独立的拥有一个变量，其他线程修改这个变量，相当于只对本线程起作用。
  
  - 原理是存了一个threadlocalmap，key是当前线程类似于ID的，value就是这个threadlocal的value
+ 
+ # 4. AQS
