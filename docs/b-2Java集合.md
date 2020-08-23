@@ -47,3 +47,16 @@ Hashtable在读写数据的时候会对整个容器上锁，而ConcurrentHashMap
 # 3. HashMap, Hashtable, ConcurrentHashMap
 
 # 4. comparable, comparator
+- comparator定制排序，重写compare方法，实际还是调用compareTo
+```java
+Collections.sort(arrayList, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        });
+```
+
+- 继承comparable接口，重写compareTo方法    代码可见javaCode
+
+- 自定义排序，比如 treeMap.put()的时候，put对象（比如Person()）的话，就是需要继承Comparable接口重写compareTo方法的，不然这个红黑树没法去排序。 而String Integer内部已经继承了comparable接口，所以不需要重写。

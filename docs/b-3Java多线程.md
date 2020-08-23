@@ -158,4 +158,42 @@
  
  - 原理是存了一个threadlocalmap，key是当前线程类似于ID的，value就是这个threadlocal的value
  
- # 4. AQS
+ # 4. 线程池
+- 降低资源的消耗。线程本身是一种资源，创建和销毁线程会有CPU开销；创建的线程也会占用一定的内存。   
+
+- 提高任务执行的响应速度。任务执行时，可以不必等到线程创建完之后再执行。   
+- 提高线程的可管理性。线程不能无限制地创建，需要进行统一的分配、调优和监控。
+- ![](figure/threadpool.png)
+
+- 为什么要调用start方法而不是run方法？
+    - 调⽤ start ⽅法⽅可启动线程并使线程进⼊就绪状态，⽽ run ⽅法只是 thread 的⼀个普通⽅法调⽤，还是在主线程⾥执⾏。
+
+- 线程池一些参数：
+    - corePoolSize: 规定线程池有几个线程(worker)在运行。
+    - QUEUE_CAPACITY 队列容量
+    - maximumPoolSize: 当workQueue满了,不能添加任务的时候，这个参数才会生效。规定线程池最多只能有多少个线程(worker)在执行。
+
+ 
+ # 5. AQS
+ - AQS的核心思想是，如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并将共享资源设置为锁定状态，如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制AQS是用CLH队列锁实现的，即将暂时获取不到锁的线程加入到队列中。
+CLH（Craig，Landin，and Hagersten）队列是一个虚拟的双向队列，虚拟的双向队列即不存在队列实例，仅存在节点之间的关联关系。
+
+- AQS是将每一条请求共享资源的线程封装成一个CLH锁队列的一个结点（Node），来实现锁的分配。
+- 用大白话来说，AQS就是基于CLH队列，用volatile修饰共享变量state，线程通过CAS去改变状态符，成功则获取锁成功，失败则进入等待队列，等待被唤醒。
+
+- **注意：AQS是自旋锁：**在等待唤醒的时候，经常会使用自旋（while(!cas())）的方式，不停地尝试获取锁，直到被其他线程获取成功
+
+- ![](figure/AQS.png)
+
+- 如图示，AQS维护了一个volatile int state和一个FIFO线程等待队列，多线程争用资源被阻塞的时候就会进入这个队列。state就是共享资源，其访问方式有如下三种：
+getState();setState();compareAndSetState();
+
+- AQS 定义了两种资源共享方式：
+    - 1.Exclusive：独占，只有一个线程能执行，如ReentrantLock
+    - 2.Share：共享，多个线程可以同时执行，如Semaphore、CountDownLatch、ReadWriteLock，CyclicBarrier
+    
+- AQS中还提供了一个内部类ConditionObject，它实现了Condition接口，可以用于await/signal。采用CLH队列的算法，唤醒当前线程的下一个节点对应的线程，而signalAll唤醒所有线程。    
+- ReentrantLock为例，（可重入独占式锁）：state初始化为0，表示未锁定状态，A线程lock()时，会调用tryAcquire()独占锁并将state+1.之后其他线程再想tryAcquire的时候就会失败，直到A线程unlock（）到state=0为止，其他线程才有机会获取该锁。A释放锁之前，自己也是可以重复获取此锁（state累加），这就是可重入的概念。
+注意：获取多少次锁就要释放多少次锁，保证state是能回到零态的。
+
+- 以CountDownLatch为例，任务分N个子线程去执行，state就初始化 为N，N个线程并行执行，每个线程执行完之后countDown（）一次，state就会CAS减一。当N子线程全部执行完毕，state=0，会unpark()主调用线程，主调用线程就会从await()函数返回，继续之后的动作。
