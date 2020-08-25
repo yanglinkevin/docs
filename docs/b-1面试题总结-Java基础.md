@@ -26,3 +26,10 @@ https://www.jianshu.com/p/9c7f5daac283
 
 - equals在没有覆盖的情况下，等价于==
 - 覆盖了equals方法，一般就是重写看内容相等不。
+
+# 4. StringBuffer和StringBuilder, String
+- String有final修饰，不可变
+- StringBuffer和StringBuilder可变。
+
+- StringBuffer对方法加锁了，线程安全， StringBuider没有加锁，非线程安全。
+- 对String类型进行改变时，每次都会生成一个新的String对象，然后将指针指向新的String对象。 而StringBuffer和StringBuilder都是对对象本身进行操作。
