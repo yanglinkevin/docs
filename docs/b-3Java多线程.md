@@ -113,7 +113,27 @@
                 类的 ReentrantLock(boolean fair) 构造⽅法来制定是否是公平的。
             - synchronized关键字与wait()和notify()/notifyAll()⽅法相结合可以实现等待/通知机制，
             ReentrantLock类当然也可以实现，但是需要借助于Condition接⼝与newCondition() ⽅法。
-                    
+        
+        - 有了Synchronized为什么还需要Lock？
+            - Synchronized线程申请资源的时候，申请不到就阻塞。
+            - Lock可以做到
+                - void lockInterruptibly() throws InterruptedException; 这是个支持中断的API。Synchronized进入阻塞之后就没办法唤醒它，所以针对这个问题想了个支持响应中断的方法，让线程阻塞(lock下是等待状态)的时候可以响应中断信号，从而有机会释放已占有的资源来破环不可抢占的条件。
+                - boolean tryLock();这就是在获取锁的时候，如果获取不到就直接返回，这样也有机会释放已占有的资源来破环不可抢占的条件。
+                - boolean tryLock(long time, TimeUnit unit) throws InterrptedException;这是个支持超时的API，也就是让在一段时间内获取不到资源的线程直接返回一个错误，不进入阻塞状态，那也有机会释放已占有的资源来破环不可抢占的条件。
+       
+        - Synchronized锁和Lock锁区别？
+            - 1、synchronized是JVM层面实现的，java提供的关键字，Lock是API层面的锁。
+            - 2、synchronized不需要手动释放锁，底层会自动释放，Lock则需要手动释放锁，否则有可能导致死锁。
+            - 3、synchronized等待不可中断，除非抛出异常或者执行完成， Lock可以中断，通过interrupt()可中断。
+            - 4、synchronized是非公平锁，Lock是默认公平锁，当传入false时是非公平锁。
+            
+            - 竞争不激烈，syn比lock性能好，偏向锁-轻量级锁-重量级锁
+            - syn编码更简洁，jvm层面，锁自动释放，lock需要手动释放。
+            - syn可以用在代码块上，lock只能写在代码里。
+            - https://www.jianshu.com/p/09d5ba4bfb7a
+
+
+
 # 2. volatile如何保证可见性以及防止指令重排序？
 - 重排序场景
     - https://my.oschina.net/LucasZhu/blog/1537330
