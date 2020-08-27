@@ -1,4 +1,4 @@
-# 1. Hashmap Hashtable ConcurrentHashMap
+# 1. Hashmap Hashtable ConcurrentHashMap TreeMap LinkedHashMap
 - HashMap和Hashtable的区别:  
     - HashMap线程不安全，Hashtable里的方法经过synchronized修饰，线程安全。
     - HashMap支持null key，Hashtable不支持。
@@ -41,7 +41,15 @@ Hashtable在读写数据的时候会对整个容器上锁，而ConcurrentHashMap
 
             - ![](figure/ConcurrentHashMap.jpg)
 
+- TreeMap
+    - 红黑树
+- LinkedHashMap
+    - 在HashMap基础上，多一个双向链表，保证了插入顺序
+    - 存储要比hashmap多，遍历可能比map慢，因为要保证顺序。
+    - iterator要再看一看。
 
+- 为什么HashMap加载因子是0.75?
+    - 泊松分布，越大越容易冲突，越小空间利用率越低
 # 2. ArrayList, LinkedList, Vector
 
 # 3. HashMap, Hashtable, ConcurrentHashMap
