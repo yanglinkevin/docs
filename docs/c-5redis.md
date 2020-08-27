@@ -105,5 +105,6 @@ https://blog.csdn.net/kongmin_123/article/details/82080962?utm_medium=distribute
         - 在使用了槽的一致性哈希分区中，槽是数据管理和迁移的基本单位。槽 解耦 了 数据和实际节点 之间的关系，增加或删除节点对系统的影响很小。仍以上图为例，系统中有 4 个实际节点，假设为其分配 16 个槽(0-15)；
 
         - 槽 0-3 位于 node1；4-7 位于 node2；以此类推....如果此时删除 node2，只需要将槽 4-7 重新分配即可，例如槽 4-5 分配给 node1，槽 6 分配给 node3，槽 7 分配给 node4；可以看出删除 node2 后，数据在其他节点的分布仍然较为均衡。
-![](figure/yizhixinghash.png)
+        - 同理新增节点，也要对受到影响的节点进行rehash
+        - ![](figure/yizhixinghash.png)
 
