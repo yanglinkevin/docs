@@ -4,7 +4,7 @@
 ## 杨林的笔记
 
 - 在线阅读地址：https://snailclimb.gitee.io/javaguide-interview/#/
-- [操作系统](./docs/c-4操作系统.md)
+- [操作系统](docs/c-4.1操作系统.md)
 - [计算机网络](./docs/c-1计算机网络.md)
 - [分布式与微服务](./docs/c-1计算机网络.md)
 - java&go：https://github.com/Snailclimb/JavaGuide-Interview
