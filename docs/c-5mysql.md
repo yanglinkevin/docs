@@ -151,6 +151,15 @@
 https://www.php.cn/mysql-tutorials-457330.html 数据库死锁产生条件与处理
 https://blog.csdn.net/qq_16681169/article/details/74784193 数据库死锁处理
 
+- MySQL有两种死锁处理方式：
+    - 等待，直到超时（innodb_lock_wait_timeout=50s）。
+    - 发起死锁检测，主动回滚一条事务，让其他事务继续执行（innodb_deadlock_detect=on）。
+    - 由于性能原因，一般都是使用死锁检测来进行处理死锁。
+        - 死锁检测
+            - 死锁检测的原理是构建一个以事务为顶点、锁为边的有向图，判断有向图是否存在环，存在即有死锁。
+        - 回滚
+            - 检测到死锁之后，选择插入更新或者删除的行数最少的事务回滚，基于 INFORMATION_SCHEMA.INNODB_TRX 表中的 trx_weight 字段来判断。
+
 # 8.内连接，左连接，右连接。
 ![](figure/neijoin.png)  
 ![](figure/leftjoin.png)  
@@ -236,3 +245,20 @@ select id from t where num = 100*2
 # 14. 数据库超全知识点
 - https://www.cnblogs.com/wenxiaofei/p/9853682.html
 
+# 15. sql执行过程
+- ![](figure/sql.png)  
+- https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485097&idx=1&sn=84c89da477b1338bdf3e9fcd65514ac1&chksm=cea24962f9d5c074d8d3ff1ab04ee8f0d6486e3d015cfd783503685986485c11738ccb542ba7&token=79317275&lang=zh_CN%23rd
+
+- SQL 等执行过程分为两类，一类对于查询等过程如下：权限校验---》查询缓存---》分析器---》优化器---》权限校验---》执行器---》引擎
+- 对于更新等语句执行流程如下：分析器----》权限校验----》执行器---》引擎---redo log prepare---》binlog---》redo log commit
+    
+    
+# 16. 每天产生1000w数据的数据库设计
+- 热门数据放入redis
+- 分库分表
+    - 在写入数据的时候，需要做两次路由，先对订单 id hash 后对数据库的数量取模，可以路由到一台数据库上，然后再对那台数据库上的表数量取模，就可以路由到数据库上的一个表里了。
+- 分布式唯一ID snowflake
+    - 使用一个 64 bit 的 long 型的数字作为全局唯一 id。这 64 个 bit 中，其中 1 个 bit 是不用的，然后用其中的 41 bit 作为毫秒数，用 10 bit 作为工作机器 id，12 bit 作为序列号。
+- 主从读写分离
+
+- 优化sql语句，建立合理的索引。
