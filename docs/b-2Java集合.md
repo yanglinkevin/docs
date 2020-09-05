@@ -16,6 +16,17 @@ http://javastack.cn/article/2020/hashmap-21-questions/ 常见hashmap面试题
 - 如何让HashMap变成线程安全？  
 Hashtable在读写数据的时候会对整个容器上锁，而ConcurrentHashMap并不需要对整个容器上锁，它只需要锁住要修改的部分就行了
 
+
+- HashMap线程不安全会导致什么问题？
+    - 在1.7中，采用头插法，会形成环形链表的问题。
+    
+    - 在1.8之后，采用尾插法，解决了环形链表的问题，但会发生数据覆盖的问题。
+        - 如果线程A和线程B同时进行put操作，刚好这两条不同的数据hash值一样，并且该位置数据为null，所以这线程A、B都会进入第6行代码中。
+            - if ((p = tab[i = (n - 1) & hash]) == null) // 如果没有hash碰撞则直接插入元素
+                - tab[i] = newNode(hash, key, value, null);
+        
+        - 假设一种情况，线程A进入后还未进行数据插入时挂起，而线程B正常执行，从而正常插入数据，然后线程A获取CPU时间片，此时线程A不用再进行hash判断了，问题出现：线程A会把线程B插入的数据给覆盖，发生线程不安全。
+
 - HashMap(HashSet)如何检查重复
     - 先计算hashcode，如果没有相同就直接插入，如果有相同就调用equals方法。
     - 两个对象hashcode相同不一定是相同的

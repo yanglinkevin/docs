@@ -16,6 +16,10 @@
     - CAS是CPU的一个指令（需要JNI调用Native方法，才能调用CPU的指令）
     - CAS是非阻塞的、轻量级的乐观锁
 
+- Java对象头里的东西
+    - https://www.jianshu.com/p/9d729c9c94c4
+    - https://www.cnblogs.com/ulysses-you/p/10060463.html
+
 - Synchronized
     - https://www.jianshu.com/p/d53bf830fa09  
     https://gitee.com/SnailClimb/JavaGuide/blob/master/docs/java/Multithread/synchronized.md
@@ -91,6 +95,8 @@
         - 5.如果失败，表示其他线程竞争锁，当前线程便尝试使用自旋来获取锁。
         - 6.如果自旋成功则依然处于轻量级状态。
         - 7.如果自旋失败，则升级为重量级锁。
+        
+        - ![](figure/syn.png)
         
     - 可重入锁，synchronized是可重入锁吗？
         - 通俗来说：当线程请求一个由其它线程持有的对象锁时，该线程会阻塞，而当线程请求由自己持有的对象锁时，如果该锁是重入锁，请求就会成功，否则阻塞
