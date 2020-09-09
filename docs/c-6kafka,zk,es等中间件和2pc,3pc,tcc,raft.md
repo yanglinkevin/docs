@@ -41,7 +41,15 @@ https://www.iteblog.com/archives/2605.html kafka面试题
     - 消费端丢失数据：也容易解决，关闭自动提交offset，处理完之后受到移位
     - 生产端重复发送：这个不重要，消费端消费之前从去重表中判重就可以
     - 生产端丢失数据：这个是最麻烦的情况 
-    
+
+- kafka快的原因？
+    - 总的来说Kafka快的原因：
+    - 1、partition顺序读写，充分利用磁盘特性，这是基础；
+    - 2、Producer生产的数据持久化到broker，采用mmap文件映射，实现顺序的快速写入；
+    - 3、Customer从broker读取数据，采用sendfile，将磁盘文件读到OS内核缓冲区后，直接转到socket buffer进行网络发送。
+    - https://zhuanlan.zhihu.com/p/78335525
+    - https://zhuanlan.zhihu.com/p/147054382
+
 # 3. 一致性算法 raft
 http://thesecretlivesofdata.com/raft/  
 raft算法动画演示  
